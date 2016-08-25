@@ -11,14 +11,21 @@ var collector = new Collector();
 
 collector.add(JSON.parse(dump.coverage));
 
+function atob(str) {
+  return new Buffer(str, 'base64').toString('binary');
+}
+
 Object.keys(originals).forEach(function(key) {
-  srcStore.set(key, new Buffer(originals[key], 'base64').toString());
+  srcStore.set(key,
+      decodeURIComponent(
+        escape(atob(originals[key]))));
 });
 
 
 var reporter = new HtmlReporter({
   sourceStore: srcStore,
   collector: collector,
+  verbose: true
 });
 
 reporter.writeReport(collector, true);
